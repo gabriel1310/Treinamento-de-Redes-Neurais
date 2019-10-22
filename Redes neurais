@@ -1,0 +1,53 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import tensorflow        as tf
+
+  
+num_features = 8
+num_iter = 2000
+learning_rate = 0.1
+
+x = np.array ([
+             [1, 0,	0, 1, 1, 0, 0, 1, 1, 1], 
+             [0, 1, 0, 1, 0, 1, 1, 0, 1, 1], 
+             [0, 1, 1, 1, 1, 1, 0, 0, 0, 1], 
+             [1, 0, 0, 1, 0, 0, 0, 1, 0, 0], 
+             [0, 1, 1, 1, 1, 0, 1, 1, 1, 0],
+             [1, 1, 0, 0, 0, 0, 1, 1, 1, 1],
+             [1, 1, 0, 1, 0, 0, 1, 0, 0, 1],
+             [0, 0, 1, 1, 0, 1, 0, 0, 1, 0],
+],np.float32)
+
+
+y = np.array ([0, 1, 1, 1, 0, 0, 0, 1], np.float32)
+y = np.reshape(y, [10,1]) 
+
+X = tf.placeholder(tf.float32, shape=[10,8])
+Y = tf.placeholder(tf.float32, shape=[10,1])
+
+W = tf.Variable(tf.zeros([8,1]), tf.float32)
+B = tf.Variable(tf.zeros([1,1]), tf.float32)
+
+yHat   = tf.sigmoid( tf.add(tf.matmul(X,W), B))
+err    = Y - yHat
+deltaW = tf.matmul(tf.transpose(X), err)
+deltaB = tf.reduce_sum(err, 0)
+
+W_ = W + 0.01 * deltaW
+B_ = B + 0.01 * deltaB
+
+step = tf.group(W.assign(W_), B.assign(B_)
+
+                
+sess = tf.session()
+init = tf.global_variables_initializer()
+sess.run(init)
+
+for k in range(num_iter):
+    sess.run([step], feed_dict={X:x, Y:y})
+    
+W = np.squeeze(sess.run(W))    
+b = np.squeeze(sess.run(B))
+
+print('W: ' + str(W))
+print('B: ' + str(b))
