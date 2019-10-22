@@ -1,0 +1,48 @@
+#p_saida = len(ds[0]) -1
+import numpy
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+
+ds = [
+  [1, 0, 0, 0],
+  [1, 0, 1, 1],
+  [1, 1, 0, 1],
+  [1 ,1 ,1 ,1]
+]
+
+w = [1.4, 0.8, -0.9]
+tx = 0.2    
+
+def soma(amostra, peso):
+  v_total = 0
+  for i, p in enumerate(peso):
+    v_total = p * amostra[i]
+    return v_total
+
+def ativação(valor):
+  if valor >= 0:
+    return 1
+  else:
+    return 0
+
+def erro(amostra, v_saida):
+  return amostra [-1] -v_saida
+
+def correção(tx, erro, peso, v_entrada):
+  for i,p in enumerate(peso):
+    p = p + (tx*erro*v_entrada[i])   
+
+while True:
+  f_ok = 0
+  for a in ds:
+    v_soma = soma(a, w)
+    v_saida = ativação(v_soma)
+    v_erro = erro(a, v_saida)
+    if v_erro != 0:
+      correção(tx, v_erro, w, a)
+      f_ok += 1
+  if f_ok == 0:
+    break 
+print("Redes treinadas")
+print("Os pesos são:")
